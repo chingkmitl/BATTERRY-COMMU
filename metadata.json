@@ -1,0 +1,7 @@
+{
+  "name": "H_ET Maintenance Intelligence",
+  "description": "An advanced AI-powered data analysis platform for H_ET maintenance data, providing strategic insights using Gemini 3 Flash.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
