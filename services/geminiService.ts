@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, Type } from "@google/generative-ai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { SheetData, AnalysisResult } from '../types';
 
 export const analyzeWithGemini = async (allSheets: SheetData[]): Promise<AnalysisResult> => {
