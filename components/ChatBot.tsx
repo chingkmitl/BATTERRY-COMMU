@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI } from '@google/generative-ai';
 import { X, Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
 import { SheetData } from '../types';
 
