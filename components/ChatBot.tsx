@@ -36,16 +36,22 @@ const ChatBot: React.FC<Props> = ({ isOpen, onClose, allData }) => {
     setIsTyping(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const apiKey = process.env.API_KEY;
+      if (!apiKey) throw new Error("API Key is missing in environment variables");
+
+      const ai = new GoogleGenAI({ apiKey });
       // Filter out 'code' sheet
       const analysisData = allData.filter(s => s.name.toLowerCase() !== 'code');
       
       // Send ALL rows to the model to ensure accurate counting. 
-      // Gemini Flash models have large context windows (1M+ tokens), so this is generally safe for typical sheet sizes.
       const context = analysisData.map(s => `Sheet ${s.name} (${s.rows.length} records): ${JSON.stringify(s.rows)}`).join('\n\n');
       
-      // Prepare history (last 10 messages)
-      const history = messages.slice(-10).map(msg => ({
+      // Prepare history (last 10 messages), EXCLUDING the initial greeting (index 0)
+      // API expects history to start with 'user' role usually, or at least reflect valid turns.
+      // The initial greeting is UI-only and not part of the API conversation context yet.
+      const validHistoryMessages = messages.slice(1);
+      
+      const history = validHistoryMessages.slice(-10).map(msg => ({
         role: msg.role,
         parts: [{ text: msg.text }]
       }));
@@ -92,7 +98,11 @@ const ChatBot: React.FC<Props> = ({ isOpen, onClose, allData }) => {
       setMessages(prev => [...prev, { role: 'model', text: response.text || 'ขออภัยครับ ไม่พบข้อมูลที่เกี่ยวข้อง' }]);
     } catch (error) {
       console.error('Chat Error:', error);
-      setMessages(prev => [...prev, { role: 'model', text: 'ขออภัยครับ เกิดข้อผิดพลาดในการเชื่อมต่อกับ AI' }]);
+      let errorMessage = 'ขออภัยครับ เกิดข้อผิดพลาดในการเชื่อมต่อกับ AI';
+      if (error instanceof Error) {
+        errorMessage += ` (${error.message})`;
+      }
+      setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
     } finally {
       setIsTyping(false);
     }
