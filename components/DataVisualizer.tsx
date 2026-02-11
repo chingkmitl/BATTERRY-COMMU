@@ -226,7 +226,8 @@ const DataVisualizer: React.FC<Props> = ({ data, sheetName }) => {
              // Detect types present in this row
              if (isValid(getVal('BASE_STATION') || getVal('BASE STATION'))) types.push('Base Station');
              if (isValid(getVal('FIXED RADIO') || getVal('FIXED_RADIO'))) types.push('Fixed Radio');
-             if (isValid(getVal('MOBILE RADIO') || getVal('MOBILE_RADIO'))) types.push('Mobile Radio');
+             // Mobile Radio ไม่มีการเปลี่ยนแบต ไม่ต้องแสดงในแผนงานรายเดือน
+             // if (isValid(getVal('MOBILE RADIO') || getVal('MOBILE_RADIO'))) types.push('Mobile Radio');
              if (isValid(getVal('HANHELD') || getVal('HANDHELD'))) types.push('Handheld');
 
              if (types.length > 0) {
