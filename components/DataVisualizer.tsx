@@ -188,6 +188,13 @@ const DataVisualizer: React.FC<Props> = ({ data, sheetName }) => {
       return found ? row[found] : null;
     };
 
+    const isValid = (v: any) => {
+      if (v === null || v === undefined) return false;
+      const s = String(v).trim();
+      // Ignore "0", "-", empty, or "nan"
+      return s !== "" && s !== "-" && s.toLowerCase() !== "nan" && s !== "0";
+    };
+
     let nextDateStr;
     if (isRadioSheet) {
       nextDateStr = getVal('NEXTB_BAT') || getVal('NEXTF_BAT') || getVal('NEXTH_BAT');
@@ -197,7 +204,7 @@ const DataVisualizer: React.FC<Props> = ({ data, sheetName }) => {
 
     const name = getName(row, sheetName);
     
-    // อายุการใช้งาน
+    // อายุการใช้งาน และ แผนการเปลี่ยนรายเดือน
     if (nextDateStr) {
       const nextDate = new Date(nextDateStr);
       const today = new Date();
@@ -211,19 +218,28 @@ const DataVisualizer: React.FC<Props> = ({ data, sheetName }) => {
         const monthYear = `${String(nextDate.getMonth() + 1).padStart(2, '0')}/${nextDate.getFullYear() + 543}`;
         if (!monthlyProjection[monthYear]) monthlyProjection[monthYear] = { count: 0, names: [] };
         monthlyProjection[monthYear].count++;
-        monthlyProjection[monthYear].names.push(name);
+        
+        // Custom name format for Radio Sheet Monthly Plan (include equipment types)
+        let displayItemName = name;
+        if (isRadioSheet) {
+             const types: string[] = [];
+             // Detect types present in this row
+             if (isValid(getVal('BASE_STATION') || getVal('BASE STATION'))) types.push('Base Station');
+             if (isValid(getVal('FIXED RADIO') || getVal('FIXED_RADIO'))) types.push('Fixed Radio');
+             if (isValid(getVal('MOBILE RADIO') || getVal('MOBILE_RADIO'))) types.push('Mobile Radio');
+             if (isValid(getVal('HANHELD') || getVal('HANDHELD'))) types.push('Handheld');
+
+             if (types.length > 0) {
+                 displayItemName = `${name} [${types.join(', ')}]`;
+             }
+        }
+
+        monthlyProjection[monthYear].names.push(displayItemName);
       }
     }
 
     // ประเภทอุปกรณ์วิทยุ (ดึงข้อมูลแบบ Case-insensitive และรองรับทั้งแบบมี/ไม่มี Underscore)
     if (isRadioSheet) {
-      const isValid = (v: any) => {
-        if (v === null || v === undefined) return false;
-        const s = String(v).trim();
-        // Ignore "0", "-", empty, or "nan"
-        return s !== "" && s !== "-" && s.toLowerCase() !== "nan" && s !== "0";
-      };
-      
       const t1 = getVal('TOWER_NO1');
       const t2 = getVal('TOWER_NO2');
       
