@@ -314,7 +314,20 @@ const DataVisualizer: React.FC<Props> = ({ data, sheetName }) => {
         <div className="bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-slate-100 flex flex-col hover:shadow-xl transition-all duration-500">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-black text-slate-800 tracking-tight">สถานะอายุการใช้งานอุปกรณ์</h3>
+              <div className="flex items-center gap-2">
+                  <h3 className="text-xl font-black text-slate-800 tracking-tight">สถานะอายุการใช้งานอุปกรณ์</h3>
+                  <div className="group relative">
+                      <Info className="w-4 h-4 text-slate-300 hover:text-indigo-500 cursor-help transition-colors" />
+                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-3 bg-slate-800 text-white text-[10px] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
+                          <div className="space-y-1">
+                              <p className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-500"></span> เลยกำหนด (วันนี้)</p>
+                              <p className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500"></span> เตือน (ภายใน 60 วัน)</p>
+                              <p className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> ปกติ (&gt; 60 วัน)</p>
+                          </div>
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-slate-800"></div>
+                      </div>
+                  </div>
+              </div>
               <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1.5">ภาพรวมการเปลี่ยนแบตเตอรี่</p>
             </div>
             <div className="bg-indigo-50 p-3 rounded-2xl text-indigo-600"><Calendar className="w-5 h-5" /></div>
