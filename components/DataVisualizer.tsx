@@ -320,7 +320,7 @@ const DataVisualizer: React.FC<Props> = ({ data, sheetName }) => {
           </div>
         </div>
 
-        {/* กราฟแท่ง */}
+        {/* กราฟแท่ง (ถ้าเป็น Radio ให้แสดง Radio Dist, ถ้าไม่ใช่แสดง Monthly Plan) */}
         <div className="bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-slate-100 flex flex-col hover:shadow-xl transition-all duration-500">
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -354,6 +354,33 @@ const DataVisualizer: React.FC<Props> = ({ data, sheetName }) => {
           )}
         </div>
       </div>
+
+      {/* เพิ่มกราฟแผนการเปลี่ยนอุปกรณ์รายเดือน สำหรับ Digital Radio (แสดงเพิ่มเติมด้านล่าง) */}
+      {showRadioChart && (
+        <div className="bg-white p-8 md:p-10 rounded-[40px] shadow-sm border border-slate-100 flex flex-col hover:shadow-xl transition-all duration-500">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-black text-slate-800 tracking-tight">แผนการเปลี่ยนอุปกรณ์รายเดือน (ภาพรวม)</h3>
+              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1.5">ประมาณการงวดงานเปลี่ยนแบตเตอรี่ 12 เดือนล่วงหน้า</p>
+            </div>
+            <div className="bg-indigo-50 p-3 rounded-2xl text-indigo-600"><Calendar className="w-5 h-5" /></div>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="date" fontSize={10} tick={{ fill: '#94a3b8', fontWeight: 900 }} axisLine={false} tickLine={false} dy={10} />
+                <YAxis fontSize={10} tick={{ fill: '#94a3b8', fontWeight: 900 }} axisLine={false} tickLine={false} />
+                <Tooltip cursor={{fill: '#f8fafc', radius: [12, 12, 0, 0]}} content={<CustomBarTooltip />} />
+                <Bar 
+                  dataKey="count" fill="#6366f1" radius={[12, 12, 0, 0]} barSize={32} style={{ cursor: 'pointer' }}
+                  onClick={(p) => p && setModalData({ isOpen: true, title: `แผนงานเดือน ${p.date}`, subtitle: `พบอุปกรณ์ทั้งหมด ${p.names.length} รายการ`, items: p.names, color: '#6366f1' })}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       <DetailModal 
         isOpen={modalData.isOpen} 
