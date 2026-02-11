@@ -7,11 +7,18 @@ export default defineConfig(({ mode }) => {
   // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   const env = loadEnv(mode, (process as any).cwd(), '');
 
+  // Robustly resolve API Key from various possible sources
+  // 1. env.API_KEY (from .env file loaded by Vite)
+  // 2. process.env.API_KEY (from system/deployment environment like Vercel)
+  // 3. VITE_ prefixed versions as fallback (common convention)
+  const apiKey = env.API_KEY || process.env.API_KEY || env.VITE_API_KEY || process.env.VITE_API_KEY || "";
+
   return {
     plugins: [react()],
     define: {
       // Vital for using process.env.API_KEY in client-side code as required by Gemini SDK
-      'process.env.API_KEY': JSON.stringify(env.API_KEY),
+      // Using JSON.stringify to ensure it's injected as a string literal
+      'process.env.API_KEY': JSON.stringify(apiKey),
     },
     resolve: {
       alias: {

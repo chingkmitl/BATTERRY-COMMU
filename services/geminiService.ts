@@ -3,7 +3,14 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { SheetData, AnalysisResult } from '../types';
 
 export const analyzeWithGemini = async (allSheets: SheetData[]): Promise<AnalysisResult> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY;
+  
+  if (!apiKey) {
+    console.error("API Key is missing. Please check your .env file or deployment settings.");
+    throw new Error("API Key configuration error. Please contact administrator.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   
   const contextDescription = allSheets.map(s => {
     return `Sheet: "${s.name}" (${s.rows.length} records). 
