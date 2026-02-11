@@ -11,7 +11,8 @@ export default defineConfig(({ mode }) => {
   // 1. env.API_KEY (from .env file loaded by Vite)
   // 2. process.env.API_KEY (from system/deployment environment like Vercel)
   // 3. VITE_ prefixed versions as fallback (common convention)
-  const apiKey = env.API_KEY || process.env.API_KEY || env.VITE_API_KEY || process.env.VITE_API_KEY || "";
+  // 4. Hardcoded fallback as requested
+  const apiKey = env.API_KEY || process.env.API_KEY || env.VITE_API_KEY || process.env.VITE_API_KEY || "AIzaSyCGVCfNePtft0egn2OW2WLYGnDVZzQkIXY";
 
   return {
     plugins: [react()],
